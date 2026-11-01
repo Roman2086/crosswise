@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4eddf">
+  <meta name="description" content="Crosswise is a math crossword. Fill the grid with whole-number tiles up to 99 so every across and down equation balances.">
+  <title>Crosswise — Math Crossword</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#board">Skip to the puzzle</a>
+
+  <div class="page-grid" aria-hidden="true"></div>
+  <span class="page-doodle page-doodle--one" aria-hidden="true">+</span>
+  <span class="page-doodle page-doodle--two" aria-hidden="true">÷</span>
+  <span class="page-doodle page-doodle--three" aria-hidden="true">=</span>
+
+  <header class="site-header">
+    <a class="brand" href="#" id="brand-home" aria-label="Crosswise home">
+      <span class="brand-mark" aria-hidden="true">
+        <span class="brand-mark-cell brand-mark-cell--a">+</span>
+        <span class="brand-mark-cell brand-mark-cell--b">=</span>
+        <span class="brand-mark-cell brand-mark-cell--c">×</span>
+        <span class="brand-mark-cell brand-mark-cell--d">÷</span>
+      </span>
+      <span class="brand-copy">
+        <span class="brand-name">Crosswise</span>
+        <span class="brand-tagline">A math crossword</span>
+      </span>
+    </a>
+
+    <div class="header-tools">
+      <div class="level-switch" role="radiogroup" aria-label="Difficulty level">
+        <button class="level-button is-active" type="button" data-level="easy" role="radio" aria-checked="true" title="7 × 7 · two-number sums and differences, values up to 20">
+          <span class="level-button-label">Easy</span>
+          <span class="level-button-size">7 × 7</span>
+        </button>
+        <button class="level-button" type="button" data-level="medium" role="radio" aria-checked="false" title="9 × 9 · longer chains with multiplication, values up to 80">
+          <span class="level-button-label">Medium</span>
+          <span class="level-button-size">9 × 9</span>
+        </button>
+        <button class="level-button" type="button" role="radio" aria-checked="false" data-level="hard" title="11 × 11 · values up to 99 and all four operations">
+          <span class="level-button-label">Hard</span>
+          <span class="level-button-size">11 × 11</span>
+        </button>
+      </div>
+      <button class="button button--ink new-puzzle-button" type="button" id="new-puzzle">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M16.2 7.3A6.7 6.7 0 1 0 16.6 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M16.7 3.6v4.1h-4.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        New puzzle
+      </button>
+    </div>
+  </header>
+
+  <main class="game-shell">
+    <section class="play-column" aria-label="Puzzle">
+      <div class="puzzle-heading">
+        <div>
+          <p class="eyebrow"><span id="level-name">Easy</span><span class="eyebrow-dot">·</span><span id="grid-size">7 × 7</span><span class="eyebrow-dot">·</span><span id="puzzle-number">Puzzle #0000</span></p>
+          <h1 id="level-title">A gentle warm-up.</h1>
+        </div>
+        <div class="quick-stats" aria-label="Game statistics">
+          <div class="quick-stat">
+            <span class="quick-stat-value" id="timer">00:00</span>
+            <span class="quick-stat-label">Time</span>
+          </div>
+          <div class="quick-stat">
+            <span class="quick-stat-value" id="moves">0</span>
+            <span class="quick-stat-label">Moves</span>
+          </div>
+          <div class="quick-stat quick-stat--accent">
+            <span class="quick-stat-value" id="tiles-left">0</span>
+            <span class="quick-stat-label">Tiles left</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="board-frame">
+        <div class="board-frame-bar">
+          <span class="frame-label">The grid</span>
+          <span class="frame-count"><span id="equation-count">0</span> equations</span>
+        </div>
+        <div class="board" id="board" role="grid" aria-label="Math crossword grid" aria-rowcount="7" aria-colcount="7" tabindex="-1"></div>
+      </div>
+
+      <section class="bank-card" aria-labelledby="bank-title">
+        <div class="bank-heading">
+          <div>
+            <h2 id="bank-title">Number bank</h2>
+            <p id="bank-instruction">Pick a tile, then tap a blank.</p>
+          </div>
+          <span class="bank-count" id="bank-count">0 left</span>
+        </div>
+        <div class="tile-bank" id="tile-bank" role="group" aria-label="Available number tiles"></div>
+        <p class="bank-empty" id="bank-empty" hidden>Your bank is empty. Time to check every line.</p>
+      </section>
+
+      <p class="order-note"><span aria-hidden="true">↳</span> Standard order of operations: <strong>×</strong> and <strong>÷</strong> before <strong>+</strong> and <strong>−</strong>.</p>
+    </section>
+
+    <aside class="side-column" aria-label="Game controls and help">
+      <section class="panel progress-panel" aria-labelledby="progress-title">
+        <div class="panel-heading">
+          <h2 id="progress-title">Progress</h2>
+          <span class="level-chip" id="level-chip">Easy · 7 × 7</span>
+        </div>
+
+        <div class="progress-meta">
+          <span id="progress-label">0 of 0 tiles placed</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track">
+          <span class="progress-fill" id="progress-fill"></span>
+        </div>
+
+        <div class="equation-stat">
+          <span class="equation-stat-number" id="equations-solved">0</span>
+          <span class="equation-stat-copy"><strong id="equation-stat-label">lines balanced</strong><span>out of <span id="equations-total">0</span></span></span>
+          <span class="equation-stat-spark" aria-hidden="true">✦</span>
+        </div>
+
+        <div class="panel-actions">
+          <button class="button button--check" type="button" id="check-button">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="m4 10.5 3.6 3.6L16 5.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Check
+          </button>
+          <button class="button button--hint" type="button" id="hint-button">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M7.2 13.2c-1.2-1-1.9-2.4-1.9-4A4.7 4.7 0 0 1 10 4.5a4.7 4.7 0 0 1 4.7 4.7c0 1.6-.7 3-1.9 4-.7.6-1.1 1.2-1.2 2.1H8.4c-.1-.9-.5-1.5-1.2-2.1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M8.4 17h3.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            Hint <span class="button-badge" id="hint-count">3</span>
+          </button>
+          <button class="button button--ghost" type="button" id="undo-button" disabled>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M7.4 6 3.8 9.5l3.6 3.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4.2 9.5h7a4 4 0 0 1 4 4v1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Undo
+          </button>
+        </div>
+        <p class="action-note" id="action-note">Tap a filled cell to send its tile back to the bank.</p>
+      </section>
+
+      <section class="panel line-panel" aria-labelledby="line-title">
+        <div class="panel-heading">
+          <h2 id="line-title">Line check</h2>
+          <span class="line-badge" id="line-badge" hidden></span>
+        </div>
+        <div class="line-inspector" id="line-inspector">
+          <div class="line-empty">
+            <span class="line-empty-mark" aria-hidden="true">⌖</span>
+            <p>Select any cell to see the across and down equations it belongs to.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel help-panel" aria-labelledby="help-title">
+        <div class="panel-heading">
+          <h2 id="help-title">How to play</h2>
+          <span class="help-kicker">3 steps</span>
+        </div>
+        <ol class="help-list">
+          <li><span class="help-number">1</span><span>Choose a number from the bank.</span></li>
+          <li><span class="help-number">2</span><span>Drop it into any blank cell.</span></li>
+          <li><span class="help-number">3</span><span>Balance every across and down equation. Use every tile.</span></li>
+        </ol>
+        <p class="help-note">Each cell holds a whole number. Hard grids can reach 99.</p>
+        <div class="legend" aria-label="Cell key">
+          <span class="legend-item"><span class="legend-swatch legend-swatch--given">7</span> given</span>
+          <span class="legend-item"><span class="legend-swatch legend-swatch--yours">4</span> yours</span>
+          <span class="legend-item"><span class="legend-swatch legend-swatch--op">+</span> operator</span>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <p>Crosswise <span aria-hidden="true">·</span> a little arithmetic, a little architecture.</p>
+    <p id="best-time">Best easy time —</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
+    <span class="toast-mark" aria-hidden="true">!</span>
+    <span class="toast-text" id="toast-text"></span>
+  </div>
+
+  <div class="win-modal" id="win-modal" hidden>
+    <div class="win-backdrop" data-close-win></div>
+    <div class="win-confetti" id="win-confetti" aria-hidden="true"></div>
+    <div class="win-card" role="dialog" aria-modal="true" aria-labelledby="win-title">
+      <button class="win-close" type="button" id="close-win" aria-label="Close celebration">×</button>
+      <p class="win-kicker">Every line balances</p>
+      <h2 id="win-title">Beautifully<br><em>crosswise.</em></h2>
+      <p class="win-copy" id="win-copy">You found the one arrangement that makes every equation sing.</p>
+      <div class="win-stats">
+        <div><span id="win-time">00:00</span><small>Time</small></div>
+        <div><span id="win-moves">0</span><small>Moves</small></div>
+        <div><span id="win-hints">0</span><small>Hints</small></div>
+      </div>
+      <p class="win-best" id="win-best"></p>
+      <div class="win-actions">
+        <button class="button button--ink" type="button" id="next-puzzle">Play another</button>
+        <button class="button button--ghost" type="button" data-close-win>Admire the board</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="src/equations.js"></script>
+  <script src="src/generator.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>

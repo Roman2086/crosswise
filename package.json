@@ -1,0 +1,17 @@
+{
+  "name": "crosswise",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Crosswise — a generated math crossword with interlocking equations.",
+  "scripts": {
+    "test": "node tests/generator.test.js",
+    "test:browser": "node tests/browser.test.js"
+  },
+  "keywords": [
+    "game",
+    "math",
+    "crossword",
+    "puzzle"
+  ],
+  "license": "UNLICENSED"
+}

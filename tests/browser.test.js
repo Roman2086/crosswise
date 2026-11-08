@@ -395,6 +395,19 @@ async function main() {
   console.log("  ok  solved the puzzle through the UI — " + won.time);
 
   await click("#close-win");
+  await waitFor(
+    () => evaluate("document.getElementById('win-modal').hidden === true"),
+    3000,
+    "win modal closes"
+  );
+  const closed = await evaluate(`(() => ({
+    hidden: document.getElementById('win-modal').hidden,
+    bodyLocked: document.body.classList.contains('modal-open')
+  }))()`);
+  assert.equal(closed.hidden, true, "the X button closes the win window");
+  assert.equal(closed.bodyLocked, false, "closing the win window unlocks page scrolling");
+  console.log("  ok  win window closes from the X button");
+
   await click('[data-level="medium"]');
   await waitFor(
     () => evaluate("document.getElementById('board').style.getPropertyValue('--size') === '9'"),

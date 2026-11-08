@@ -1402,7 +1402,7 @@
     els.hintButton.addEventListener("click", giveHint);
     els.undoButton.addEventListener("click", undo);
 
-    document.querySelectorAll("[data-close-win]").forEach(function (element) {
+    document.querySelectorAll("[data-close-win], #close-win").forEach(function (element) {
       element.addEventListener("click", function () {
         closeWinModal();
       });
